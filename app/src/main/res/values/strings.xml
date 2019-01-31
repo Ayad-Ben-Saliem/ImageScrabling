@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ImageScrabling</string>
+    <string name="scramble">بعثرة</string>
+    <string name="recover">استرجاع</string>
+    <string name="save">حفظ</string>
+    <string name="selectImages">اختر الصور التي تريد</string>
+    <string name="password">كلمة المرور</string>
+    <string name="login">دخول</string>
+    <string name="changePassword">تغيير كلمة المرور...</string>
+    <string name="enterPasswordMsg">ارجو ادخال كلمة المرور</string>
+    <string name="incorrectPasswordMsg">كلمة المرور غير صحيحة</string>
+    <string name="oldPassword">كلمة المرور القديمة</string>
+    <string name="newPassword">كلمة المرور الجديدة</string>
+    <string name="confirmPassword">تأكيد كلمة المرور الجديدة</string>
+    <string name="change">تعديل</string>
+</resources>

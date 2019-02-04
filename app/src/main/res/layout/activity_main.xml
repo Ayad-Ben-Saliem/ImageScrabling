@@ -59,11 +59,13 @@
     </android.support.v7.widget.LinearLayoutCompat>
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/textView"
+        android:id="@+id/selectAllTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/selectImages"
-        android:textSize="25sp"/>
+        android:layout_margin="8dp"
+        android:text="@string/selectAll"
+        android:textSize="20sp"
+        android:textColor="@android:color/holo_blue_dark" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/bottomRecyclerView"

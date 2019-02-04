@@ -1,29 +1,22 @@
 package com.rqmana.scrambling;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,10 +24,13 @@ public class MainActivity extends AppCompatActivity {
 
     private final int REQUEST_READ_EXTERNAL_STORAGE_PERMISSIONS_CODE = 123;
 
-    private final ArrayList<String> bottomImageNames = new ArrayList<>();
-    private final ArrayList<String> topImageNames = new ArrayList<>();
+    private final ListSet<String> bottomImageNames = new ListSet<>();
+    private final ListSet<String> topImageNames = new ListSet<>();
 
     private TopRecyclerViewAdapter topAdapter;
+
+    private AppCompatTextView selectAllTV;
+    private static boolean selectAllMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +53,25 @@ public class MainActivity extends AppCompatActivity {
 
         topAdapter = new TopRecyclerViewAdapter();
         topRecyclerView.setAdapter(topAdapter);
-        bottomRecyclerView.setAdapter(new BottomRecyclerViewAdapter());
+        BottomRecyclerViewAdapter bottomAdapter = new BottomRecyclerViewAdapter();
+        bottomRecyclerView.setAdapter(bottomAdapter);
+
+        selectAllTV = findViewById(R.id.selectAllTV);
+        selectAllTV.setOnClickListener(view -> {
+            setSelectAllMode(!selectAllMode);
+            bottomAdapter.notifyDataSetChanged();
+        });
+    }
+
+    void setSelectAllMode(boolean selectAllMode) {
+        MainActivity.selectAllMode = selectAllMode;
+        topImageNames.clear();
+        if (selectAllMode) {
+            selectAllTV.setText(getString(R.string.unselectAll));
+            topImageNames.addAll(bottomImageNames);
+        } else {
+            selectAllTV.setText(getString(R.string.selectAll));
+        }
     }
 
     private class TopRecyclerViewAdapter extends RecyclerView.Adapter<TopViewHolder> {
@@ -94,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class BottomRecyclerViewAdapter extends RecyclerView.Adapter<BottomViewHolder> {
-
         @NonNull
         @Override
         public BottomViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewTypoe) {
@@ -126,16 +139,27 @@ public class MainActivity extends AppCompatActivity {
             AppCompatImageView iv = itemView.findViewById(R.id.iv);
             iv.setImageBitmap(BitmapFactory.decodeFile(bottomImageNames.get(index)));
 
-            itemView.findViewById(R.id.iv).setOnClickListener(v -> {
-                isChecked = !isChecked;
-                if (isChecked) {
-                    itemView.findViewById(R.id.signIV).setVisibility(View.VISIBLE);
-                    topImageNames.add(bottomImageNames.get(index));
-                } else {
-                    itemView.findViewById(R.id.signIV).setVisibility(View.INVISIBLE);
-                    topImageNames.remove(bottomImageNames.get(index));
+            select(index, selectAllMode);
+
+            iv.setOnClickListener(v -> {
+                if (selectAllMode) {
+                    selectAllMode = false;
+                    selectAllTV.setText(getString(R.string.selectAll));
                 }
+                isChecked = !isChecked;
+                select(index, isChecked);
             });
+        }
+
+        void select(int index, boolean status) {
+            isChecked = status;
+            if (isChecked) {
+                itemView.findViewById(R.id.signIV).setVisibility(View.VISIBLE);
+                topImageNames.add(bottomImageNames.get(index));
+            } else {
+                itemView.findViewById(R.id.signIV).setVisibility(View.INVISIBLE);
+                topImageNames.remove(bottomImageNames.get(index));
+            }
         }
     }
 
@@ -145,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onRecoverBtnClicked(View view) {
         topAdapter.notifyDataSetChanged();;
-
     }
 
     public void onSaveBtnClicked(View view) {

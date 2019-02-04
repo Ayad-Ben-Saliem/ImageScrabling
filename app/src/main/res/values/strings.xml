@@ -13,4 +13,6 @@
     <string name="newPassword">كلمة المرور الجديدة</string>
     <string name="confirmPassword">تأكيد كلمة المرور الجديدة</string>
     <string name="change">تعديل</string>
+    <string name="selectAll">تحديد الكل</string>
+    <string name="unselectAll">إلغاء تحديد الكل</string>
 </resources>

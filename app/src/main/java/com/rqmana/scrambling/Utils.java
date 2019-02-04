@@ -101,15 +101,19 @@ class Utils {
     static void deleteImage(Context context, String imagePath) {
         File file = new File(imagePath);
         if (file.exists()) {
-            boolean is = file.delete();
-            if (is)
+            if (file.delete())
                 callBroadcast(context);
         }
     }
 
     private static void callBroadcast(Context context) {
-        MediaScannerConnection.scanFile(context, new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
-            public void onScanCompleted(String path, Uri uri) { }
+        /*
+         *   (non-Javadoc)
+         * @see android.media.MediaScannerConnection.OnScanCompletedListener#onScanCompleted(java.lang.String, android.net.Uri)
+         */
+        MediaScannerConnection.scanFile(context, new String[]{Environment.getExternalStorageDirectory().toString()}, null, (path, uri) -> {
+            Log.e(TAG, "Scanned " + path + ":");
+            Log.e(TAG, "-> uri=" + uri);
         });
     }
 
